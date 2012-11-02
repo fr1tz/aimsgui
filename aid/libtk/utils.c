@@ -851,10 +851,10 @@ tkdrawrelief(Image *i, Tk *tk, Point o, int color, int rlf)
 
 	e = tk->env;
 	if (color == TkCbackgnd || color == TkCselectbgnd || color == TkCactivebgnd) {
-		l = tkgc(e, color+TkLightshade);
+		l = tkgc(e, color+TkDarkshade);
 		d = tkgc(e, color+TkDarkshade);
 	} else {
-		l = tkgshade(e, color, TkLightshade);
+		l = tkgshade(e, color, TkDarkshade);
 		d = tkgshade(e, color, TkDarkshade);
 	}
 	bd = tk->borderwidth;
