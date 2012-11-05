@@ -889,7 +889,7 @@ xinitscreen(int xsize, int ysize, ulong reqchan, ulong *chan, int *d)
 	 * set up property as required by ICCCM
 	 */
 	memset(&name, 0, sizeof(name));
-	name.value = (uchar*)"inferno";
+	name.value = (uchar*)"AimsGui";
 	name.encoding = XA_STRING;
 	name.format = 8;
 	name.nitems = strlen((char*)name.value);
@@ -903,9 +903,9 @@ xinitscreen(int xsize, int ysize, ulong reqchan, ulong *chan, int *d)
 	hints.initial_state = NormalState;
 
 	memset(&classhints, 0, sizeof(classhints));
-	classhints.res_name = "inferno";
-	classhints.res_class = "Inferno";
-	argv[0] = "inferno";
+	classhints.res_name = "aimsgui";
+	classhints.res_class = "Aimsgui";
+	argv[0] = "AimsGui";
 	argv[1] = nil;
 	XSetWMProperties(xdisplay, xdrawable,
 		&name,			/* XA_WM_NAME property for ICCCM */
