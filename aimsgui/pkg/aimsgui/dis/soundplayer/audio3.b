@@ -27,7 +27,7 @@ init(nil: ref Draw->Context, argv: list of string)
 
 play(sound: string)
 {
-	f := "/aimsgui/misc/sound/" + sound + ".iaf";
+	f := "/audio/aimsgui/" + sound + ".iaf";
 	buff := array[buffz] of byte;
 	inf := sys->open(f, Sys->OREAD);
 	if (inf == nil) {
