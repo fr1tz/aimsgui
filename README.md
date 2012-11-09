@@ -31,6 +31,9 @@ Awesome Internet Multiplayer Services (http://aims.wasted.ch).
 Linux: 
 	run ./Linux/aimsgui
 
+Windows NT:
+	run ./Nt/aimsgui.bat
+
 
 4. Building
 -----------
