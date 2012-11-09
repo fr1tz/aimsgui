@@ -1,0 +1,15 @@
+#!/dis/sh.dis
+
+load std
+hostappdir = ${hd $*}
+hostappcmd = ${tl $*}
+if { ~ $emuhost Nt  } {
+	hostapptmp = 'c:/Temp'
+	bind -c '#U'^$hostapptmp /tmp || raise fail:tmp
+	bind -c '#U'^$hostappdir /n/app || raise fail:appdir
+} {
+	hostapptmp = /tmp
+	bind -c '#U*'^$hostapptmp /tmp || raise fail:tmp
+	bind -c '#U*'^$hostappdir /n/app || raise fail:appdir
+}
+/n/app/${hd $hostappcmd} ${tl $hostappcmd}
