@@ -1,0 +1,23 @@
+#!/bin/sh
+
+thisfile=$0
+args=$*
+appdir="$(cleanname $(dirname $(pwd)/$thisfile)/../aimsgui)"
+aiddir="$appdir/../aid"
+
+test -d $aiddir || {
+	echo "Error: $aiddir does not exists!" 1>&2
+	exit
+}
+
+id=`cat /etc/hostname`.$$
+
+exec $aiddir/Linux/386/bin/emu \
+	-r$aiddir \
+	-c0 \
+	-g640x480 \
+	-f/fonts/vera/vera/vera.10.font \
+	-pmain=1024000000 \
+	-pheap=1024000000 \
+	-pimage=1024000000 \
+	hostapp $appdir load aimsgui/aimsgui -i $id -s aplay $args
