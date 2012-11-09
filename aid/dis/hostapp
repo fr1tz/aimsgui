@@ -4,7 +4,8 @@ load std
 hostappdir = ${hd $*}
 hostappcmd = ${tl $*}
 if { ~ $emuhost Nt  } {
-	hostapptmp = 'c:/Temp'
+	hostappdir = `{echo -n $hostappdir | sed 's!\\!/!g'}
+	hostapptmp = 'c:/temp'
 	bind -c '#U'^$hostapptmp /tmp || raise fail:tmp
 	bind -c '#U'^$hostappdir /n/app || raise fail:appdir
 } {
