@@ -1,0 +1,11 @@
+#!/dis/sh
+
+# This file is run by rowwm (see ./alertswin)
+
+#aimsgui/alertswin/header &
+#aimsgui/alertswin/alert &
+aimsgui/alertswin/footer &
+
+#wm/memory &
+#wm/memory &
+#wm/memory &

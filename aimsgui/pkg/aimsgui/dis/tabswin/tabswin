@@ -1,0 +1,3 @@
+#!/dis/sh.dis
+
+aimsgui/tabswin/wm /dis/aimsgui/tabswin/toolbar &

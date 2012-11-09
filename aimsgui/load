@@ -1,0 +1,112 @@
+#!/dis/sh.dis -n
+
+load std
+
+args = $*
+
+test -d /aimsgui && {
+	echo '/aimsgui already exists, bailing out!' >[1=2]
+	exit
+}
+
+if { ~ $#args 0 } {
+	ns = /tmp/`{cat /dev/sysname}^.`{date -n}^.aimsgui
+} {
+	ns = /tmp/`{cat /dev/sysname}^.`{echo ${join '' $args} | sed 's!/!_!g'}
+}
+
+thisfile = $0; appdir = `{basename -d $thisfile};
+echo appdir: $appdir >[1=2]
+
+echo 'setting up the application namespace...' >[1=2]
+
+du -a $appdir/repl | sed 's!^.*' ^ $appdir/repl ^ '/!!g' | getlines {
+	file = $line
+	ftest -f /$file && {
+		echo binding $appdir/repl/$file to /$file >[1=2]
+		bind $appdir/repl/$file /$file
+	} 
+}
+
+mkdir $ns || raise fail:init
+
+mkdir $ns/dev
+mkdir $ns/chan
+mkdir $ns/fd
+mkdir $ns/net
+mkdir $ns/env
+mkdir $ns/prog
+mkdir $ns/acme
+mkdir $ns/tmp
+mkdir $ns/mnt
+mkdir $ns/src
+mkdir $ns/n
+
+bind /dev $ns/dev
+bind /chan $ns/chan
+bind /fd $ns/fd
+bind /net $ns/net
+bind -c /env $ns/env
+bind /prog $ns/prog
+
+# packages...
+mkdir $ns/dis
+for dir in $appdir/pkg/* {
+	pkg = `{basename $dir}
+	echo found package $"pkg at $"dir >[1=2]
+	mkdir $ns/dis/$pkg
+	bind -c $dir/dis $ns/dis/$pkg
+}
+bind -a /dis $ns/dis
+
+dirs = (
+	appl
+	doc
+	fonts
+	icons
+	keydb
+	lib
+	locale
+	man
+	module
+	usr
+)
+
+for dir in $dirs {
+	mkdir $ns/$dir
+	bind /$dir $ns/$dir
+}
+
+mkdir $ns/audio
+mkdir $ns/mnt/aims 
+mkdir $ns/aimsgui
+bind -c $appdir $ns/aimsgui
+
+bind $ns /
+
+bind -bc '#saimsgui' /chan
+#mount {mntgen} /n
+#memfs /aims/run
+#bind -c /aims/run /tmp
+#lockfs /aims/lock/ /aims/lock/
+
+bind -b /aimsgui/audio /audio
+bind -b /aimsgui/icons /icons
+if { ! ftest -d /lib/look } { 
+	bind -b /aimsgui/look/default /lib
+}
+
+cd /aimsgui
+
+ns = ()
+dir = ()
+dirs = ()
+thisfile = ()
+pkg = ()
+
+echo 'aimsgui loaded' >[1=2]
+
+if { ! ~ $#args 0 } {
+	echo running $args >[1=2]
+	$args
+}

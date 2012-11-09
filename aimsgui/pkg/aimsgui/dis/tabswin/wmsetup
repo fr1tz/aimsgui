@@ -1,0 +1,46 @@
+# /dis/sh script
+# wm defines "menu" and "delmenu" builtins
+load std
+prompt='% ' ''
+fn % {$*}
+autoload=std
+home=/usr/^"{cat /dev/user}
+
+if {! {~ wm ${loaded}}} {
+	echo wmsetup must run under wm >[1=2]
+	raise usage
+}
+
+fn wmrun {
+	args := $*
+	{
+		pctl newpgrp
+		bind /dis/aimsgui/tabswin/lib/titlebar.dis /dis/lib/titlebar.dis
+		fn wmrun
+		$args
+	} > /chan/wmstdout >[2] /chan/wmstderr &
+}
+
+fn cd {
+	builtin cd $*;
+	rescue 'bad redir' {} {
+		echo cwd `{pwd} > /chan/shctl
+	} >[2] /dev/null
+}
+
+#menu 'ROTC: Ethernet' 'Publog' {
+#	wmrun aimsgui/logwindow Publog game/rotc-eth < /mnt/aims/rotc/publog/recent
+#}
+
+menu 'Servers' {
+	wmrun { aimsgui/serverswin/serverswin }
+}
+
+#menu 'About' {
+#	wmrun { cat /aimsgui/README | aimsgui/logwindow About mli }
+#}
+
+#wmrun { cat /aimsgui/README | aimsgui/logwindow About mli }
+#echo -n ready >/chan/sound >[2]/chan/wmstderr
+
+wmrun { aimsgui/serverswin/serverswin }

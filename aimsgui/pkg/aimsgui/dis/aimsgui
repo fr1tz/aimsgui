@@ -1,0 +1,53 @@
+#!/dis/sh.dis
+
+load std arg
+
+args=$*
+
+AIMSGUI_MODE         = normal
+AIMSGUI_GLOBAL_ID    = auto
+AIMSGUI_SOUND_DEVICE = none
+AIMSGUI_AIMS_ADDRESS = spica.dyndns.info
+
+fn usage() {
+	{
+		echo 'usage: aimsgui [-l] [-i aimsgui_id] [-s sound_device] [aims_server_address]'
+		echo 'sound_device must be the name of a command (''aplay'' for example) or one of:'
+		echo '  none    No sound (default; not recommended)'
+		echo '  audio3  Use Inferno''s audio(3) device (not available on all platforms)'
+		echo '  xkbbell Ring X11 keyboard bell on alert'
+		echo '  clip    Write sound to be played to clipboard'
+	} >[1=2]
+	exit
+}
+
+(arg
+	l   { AIMSGUI_MODE = light }
+	i+  { AIMSGUI_GLOBAL_ID = $arg } 	
+	s+  { AIMSGUI_SOUND_DEVICE = $arg }
+	'*' { usage }
+	- $args
+)
+
+if { ~ $AIMSGUI_GLOBAL_ID auto } {
+	AIMSGUI_GLOBAL_ID = ( 
+		`{echo -n `{read 8 < /dev/random | md5sum}^:^`{date -n}} # close enough
+	)
+}
+
+if { ~ $#* 1 } {
+	AIMSGUI_AIMS_ADDRESS = $1
+}
+
+pctl newpgrp
+
+appargs = $*
+
+if { ! mount -A tcp!$AIMSGUI_AIMS_ADDRESS!28564 /mnt/aims } {
+	ndb/cs
+	mount -A tcp!$AIMSGUI_AIMS_ADDRESS!28564 /mnt/aims
+}
+
+echo -n `{md5sum < /env/AIMSGUI_GLOBAL_ID} > /tmp/playername
+
+aimsgui/topwin/topwin &

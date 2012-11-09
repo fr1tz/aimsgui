@@ -1,0 +1,3 @@
+#!/dis/sh
+
+aimsgui/alertswin/rowwm /dis/aimsgui/alertswin/setup &

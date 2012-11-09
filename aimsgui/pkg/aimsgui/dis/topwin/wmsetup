@@ -1,0 +1,65 @@
+# /dis/sh script
+# wm defines "menu" and "delmenu" builtins
+load std
+prompt='% ' ''
+fn % {$*}
+autoload=std
+home=/usr/^"{cat /dev/user}
+
+if {! {~ wm ${loaded}}} {
+	echo wmsetup must run under wm >[1=2]
+	raise usage
+}
+
+fn wmrun {
+	args := $*
+	{
+		pctl newpgrp
+		fn wmrun
+		$args
+	} > /chan/wmstdout >[2] /chan/wmstderr &
+}
+
+fn cd {
+	builtin cd $*;
+	rescue 'bad redir' {} {
+		echo cwd `{pwd} > /chan/shctl
+	} >[2] /dev/null
+}
+
+fn init { 
+	fn init
+	# make local copies of some files for faster access
+	cp /mnt/aims/alertlist/v1/games /mnt/aims/alertlist/v1/locations /tmp
+	bind /tmp/games /mnt/aims/alertlist/v1/games
+	bind /tmp/locations /mnt/aims/alertlist/v1/locations
+	if { ~ $AIMSGUI_SOUND_DEVICE audio3 } {
+		bind -a '#A' /dev
+	}
+	aimsgui/sound-daemon $AIMSGUI_SOUND_DEVICE
+} 
+
+init >/chan/wmstdout >[2]/chan/wmstderr
+
+#plumber >/chan/wmstdout >[2=1]
+
+if { ~ $AIMSGUI_MODE normal } {
+	menu 'Quit'                               { echo halt > /dev/sysctl }
+	menu System 'Debugger'                    { wmrun wm/deb }
+	menu System 'Task Manager'                { wmrun wm/task }
+	menu System 'Memory Monitor'              { wmrun wm/memory }
+	menu System 'Shell'                       { wmrun wm/sh }
+	menu Toys 'Inferno Mine Sweeper'          { wmrun wm/sweeper }
+	menu Toys 'Inferno Snake'                 { wmrun wm/snake }
+	menu Toys 'Inferno Tetris'                { wmrun wm/tetris -b17 }
+} {
+	menu 'AimsGui Light' {}
+}
+
+{
+	pctl newpgrp forkns
+	bind /aimsgui/look/bright/look /lib/look
+	aimsgui/tabswin/tabswin
+	aimsgui/alertswin/alertswin
+	$args
+} > /chan/wmstdout >[2] /chan/wmstderr &

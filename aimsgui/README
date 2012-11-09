@@ -1,0 +1,12 @@
+AimsGui Application
+===================
+
+Files
+-----
+
+load            Inferno sh(1) script that loads the application
+audio/          Audio files (contents bound into /audio by ./load)
+icons/          Icons (contents bound into /icons by ./load)
+look/default/   ./load binds this into /lib if /lib/look doesn't exist
+pkg/            Packages (programs & libraries)
+repl/           ./load binds the files in here over their default AID counterparts

@@ -1,0 +1,3 @@
+#!/dis/sh.dis
+
+aimsgui/topwin/wm &
